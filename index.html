@@ -188,6 +188,8 @@
       <button class="tab active" data-category="cv">Computer Vision</button>
 
       <button class="tab" data-category="nlp">NLP</button>
+      <button class="tab" data-category="dl">Deep Learning</button>
+      <button class="tab" data-category="eda">EDA</button>
     </nav>
 
     <main>
@@ -517,10 +519,8 @@ plt.show()`,
 
         nlp: [
           {
-            title:
-              "Program 2",
-            description:
-              "implementation stemming and lemmatization using nltk",
+            title: "Program 2",
+            description: "implementation stemming and lemmatization using nltk",
             code: `import nltk
 from nltk.stem import PorterStemmer, LancasterStemmer, WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -559,8 +559,7 @@ print(lemmas)`,
           },
 
           {
-            title:
-              "Program 3 ",
+            title: "Program 3 ",
             description:
               "Stop word removal and N-Gran generation using Scikit-learn",
             code: `from sklearn.feature_extraction.text import CountVectorizer
@@ -592,8 +591,7 @@ feature_names, matrix`,
 
           {
             title: "Program 5  ",
-            description:
-              "Generation word embedding using word2 vec in Genism",
+            description: "Generation word embedding using word2 vec in Genism",
             code: `!pip install gensim
 
 from gensim.models import Word2Vec
@@ -627,8 +625,7 @@ for word, score in similar_words:
           },
 
           {
-            title:
-              "Program 7 ",
+            title: "Program 7 ",
             description:
               "Implementation Named Entity Recognition (NER) with spaCy",
 
@@ -654,6 +651,507 @@ for ent in doc.ents:
     print()`,
           },
         ],
+
+        dl: [
+          {
+            title: "Program 1",
+            description:
+              "To Implement Neural Networks Model for classification",
+            code: `import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+model = Sequential([
+    Dense(10, activation='relu', input_shape=(4,)),
+    Dense(10, activation='relu'),
+    Dense(3, activation='softmax')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+model.fit(X_train, y_train, epochs=30, verbose=0)
+
+loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
+print("Neural Network Model")
+print("Test Accuracy:", accuracy)
+
+prediction = model.predict(X_test[:5], verbose=0)
+print("Predicted Classes:", np.argmax(prediction, axis=1))
+print("Actual Classes: ", y_test[:5])`,
+          },
+          {
+            title: "Program 2",
+            description:
+              "To compare the convergence of MLP using Sigmoid and Softmax activation functions.",
+            code: `import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+import numpy as np
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = models.Sequential([
+    layers.Flatten(input_shape=(28, 28)),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.2),
+    layers.Dense(10)
+])
+
+model.compile(
+    optimizer='adam',
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=['accuracy']
+)
+
+print("Starting training...")
+model.fit(x_train, y_train, epochs=5)
+
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print(f'\\nFinal Test Accuracy: {test_acc * 100:.2f}%')
+
+probability_model = tf.keras.Sequential([
+    model,
+    layers.Softmax()
+])
+
+predictions = probability_model.predict(x_test[:1])
+
+plt.figure(figsize=(4, 4))
+plt.imshow(x_test[0], cmap='gray')
+plt.title(f"Prediction: {np.argmax(predictions[0])}")
+plt.axis('off')
+plt.show()`,
+          },
+          {
+            title: "Program 3",
+            description: "To build a Deep Neural Network using TensorFlow.",
+            code: `import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+def build_deep_model():
+    model = models.Sequential([
+        layers.Flatten(input_shape=(28, 28)),
+        layers.Dense(512, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dense(256, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.2),
+        layers.Dense(64, activation='relu'),
+        layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
+
+    return model
+
+deep_net = build_deep_model()
+deep_net.summary()
+
+print("\\nTraining Deep Neural Network...")
+
+history = deep_net.fit(
+    x_train,
+    y_train,
+    epochs=10,
+    validation_split=0.2,
+    batch_size=128,
+    verbose=1
+)
+
+test_loss, test_acc = deep_net.evaluate(x_test, y_test, verbose=0)
+print(f'\\nTest Accuracy: {test_acc * 100:.2f}%')
+
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Deep Network Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()`,
+          },
+          {
+            title: "Program 4",
+            description:
+              "To compare different loss functions for classification.",
+            code: `import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+y_train_oh = tf.keras.utils.to_categorical(y_train, 10)
+y_test_oh = tf.keras.utils.to_categorical(y_test, 10)
+
+def build_model(loss_function):
+    model = models.Sequential([
+        layers.Flatten(input_shape=(28, 28)),
+        layers.Dense(128, activation='relu'),
+        layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(
+        optimizer='adam',
+        loss=loss_function,
+        metrics=['accuracy']
+    )
+
+    return model
+
+print("Training with MSE...")
+
+model_mse = build_model('mse')
+
+history_mse = model_mse.fit(
+    x_train,
+    y_train_oh,
+    epochs=10,
+    batch_size=128,
+    validation_data=(x_test, y_test_oh),
+    verbose=0
+)
+
+print("Training with Cross-Entropy...")
+
+model_cce = build_model('categorical_crossentropy')
+
+history_cce = model_cce.fit(
+    x_train,
+    y_train_oh,
+    epochs=10,
+    batch_size=128,
+    validation_data=(x_test, y_test_oh),
+    verbose=0
+)
+
+plt.figure(figsize=(14, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(
+    history_mse.history['val_accuracy'],
+    label='MSE (Test Acc)',
+    color='red',
+    linestyle='--'
+)
+plt.plot(
+    history_cce.history['val_accuracy'],
+    label='Cross-Entropy (Test Acc)',
+    color='blue'
+)
+plt.title('Accuracy: MSE vs Cross-Entropy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(
+    history_mse.history['loss'],
+    label='MSE Loss',
+    color='red',
+    linestyle='--'
+)
+plt.plot(
+    history_cce.history['loss'],
+    label='Cross-Entropy Loss',
+    color='blue'
+)
+plt.title('Loss Curve: MSE vs Cross-Entropy')
+plt.xlabel('Epochs')
+plt.ylabel('Loss Value')
+plt.legend()
+
+plt.show()`,
+          },
+          {
+            title: "Program 5",
+            description:
+              "To apply regularization techniques to reduce overfitting in a classification model.",
+            code: `import tensorflow as tf
+from tensorflow.keras import layers, models, regularizers
+import matplotlib.pyplot as plt
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+def build_regularized_model():
+    model = models.Sequential([
+        layers.Flatten(input_shape=(28, 28)),
+        layers.Dense(
+            256,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(0.001)
+        ),
+        layers.Dropout(0.3),
+        layers.Dense(
+            128,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(0.001)
+        ),
+        layers.Dropout(0.3),
+        layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
+
+    return model
+
+early_stop = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss',
+    patience=3,
+    restore_best_weights=True
+)
+
+model = build_regularized_model()
+
+print("Training model with L2, Dropout, and Early Stopping...")
+
+history = model.fit(
+    x_train,
+    y_train,
+    epochs=20,
+    batch_size=128,
+    validation_split=0.2,
+    callbacks=[early_stop],
+    verbose=1
+)
+
+plt.figure(figsize=(10, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.title('Loss with Regularization')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(history.history['accuracy'], label='Train Acc')
+plt.plot(history.history['val_accuracy'], label='Val Acc')
+plt.title('Accuracy with Regularization')
+plt.legend()
+
+plt.show()`,
+          },
+        ],
+
+        eda: [
+
+
+         {
+  title: "Program 1",
+  description: "Implementation Of Three-Dimensional Plotting",
+  code: `
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+
+x = np.linspace(-5, 5, 50)
+y = np.linspace(-5, 5, 50)
+
+X, Y = np.meshgrid(x, y)
+Z = np.sin(np.sqrt(X**2 + Y**2))
+
+surface = ax.plot_surface(X, Y, Z, cmap='viridis')
+
+ax.set_title("3D Surface Plot")
+ax.set_xlabel("X Axis")
+ax.set_ylabel("Y Axis")
+ax.set_zlabel("Z Axis")
+
+fig.colorbar(surface, shrink=0.5, aspect=10)
+
+plt.show()
+`
+},
+
+
+          {
+  title: "Program 2",
+  description: " Implementation of Plots ,Histograms ,legends,colors,subplots",
+  code: `
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.arange(1, 11)
+y1 = x * 2
+y2 = x ** 2
+
+plt.figure(figsize=(14, 10))
+
+plt.subplot(2, 2, 1)
+plt.plot(x, y1, color='blue', marker='o', label='y = 2x')
+plt.plot(x, y2, color='red', marker='s', label='y = x^2')
+plt.title('Line Plot')
+plt.xlabel('X Values')
+plt.ylabel('Y Values')
+plt.legend()
+plt.grid(True)
+
+plt.subplot(2, 2, 2)
+data = np.random.randn(1000)
+plt.hist(data, bins=20, color='green', edgecolor='black')
+plt.title('Histogram')
+plt.xlabel('Values')
+plt.ylabel('Frequency')
+
+plt.subplot(2, 2, 3)
+colors = np.random.rand(10)
+plt.scatter(x, y2, c=colors, s=150, cmap='viridis')
+plt.title('Scatter Plot')
+plt.xlabel('X Values')
+plt.ylabel('Y Values')
+plt.colorbar(label='Color Scale')
+
+plt.subplot(2, 2, 4)
+subjects = ['Python', 'Java', 'C++', 'R']
+marks = [85, 78, 90, 88]
+plt.bar(subjects, marks, color=['blue', 'orange', 'green', 'purple'])
+plt.title('Bar Plot')
+plt.xlabel('Subjects')
+plt.ylabel('Marks')
+
+plt.tight_layout()
+plt.show()
+`
+},
+
+
+          {
+  title: "Program 3",
+  description: "Summary Statistics Across Multiple Variables",
+  code: `
+import pandas as pd
+
+df = pd.DataFrame({
+    "Python": [70, 80, 65, 90, 75],
+    "DBMS": [75, 85, 70, 95, 80],
+    "Maths": [68, 78, 72, 88, 76]
+})
+
+print("Summary Statistics:")
+print(df.describe())
+
+print("\\nMean:")
+print(df.mean())
+
+print("\\nMedian:")
+print(df.median())
+
+print("\\nStandard Deviation:")
+print(df.std())
+`
+},
+
+
+
+          {
+  title: "Program 4",
+  description: "box plot, violin plot, strip plot, and swarm plot",
+  code: `
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "Department": ["BCA", "BCA", "BCA", "BSc", "BSc", "BSc"],
+    "Marks": [65, 75, 80, 70, 85, 90]
+})
+
+plt.figure(figsize=(6, 4))
+sns.boxplot(data=df, x="Department", y="Marks")
+plt.title("Box Plot")
+plt.show()
+
+plt.figure(figsize=(6, 4))
+sns.violinplot(data=df, x="Department", y="Marks")
+plt.title("Violin Plot")
+plt.show()
+
+plt.figure(figsize=(6, 4))
+sns.stripplot(data=df, x="Department", y="Marks")
+plt.title("Strip Plot")
+plt.show()
+
+plt.figure(figsize=(6, 4))
+sns.swarmplot(data=df, x="Department", y="Marks")
+plt.title("Swarm Plot")
+plt.show()
+`
+},
+
+         {
+  title: "Program 5",
+  description: "grouped bar plot and heatmap of a contingency table",
+  code: `
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.DataFrame({
+    "Department": ["BCA", "BCA", "BSc", "BSc"],
+    "Gender": ["Male", "Female", "Male", "Female"],
+    "Marks": [75, 85, 70, 90]
+})
+
+plt.figure(figsize=(6, 4))
+sns.barplot(data=df, x="Department", y="Marks", hue="Gender")
+plt.title("Grouped Bar Plot")
+plt.show()
+
+table = pd.crosstab(df["Department"], df["Gender"])
+print("Contingency Table:")
+print(table)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(table, annot=True, cmap="Blues", fmt="d")
+plt.title("Heatmap of Contingency Table")
+plt.show()
+`
+},
+        ],
       };
 
       const tabs = document.querySelectorAll(".tab");
@@ -675,13 +1173,23 @@ for ent in doc.ents:
 
         const isCV = category === "cv";
 
-        categoryTitle.textContent = isCV
-          ? "Computer Vision"
-          : "Natural Language Processing";
+        categoryTitle.textContent =
+          category === "cv"
+            ? "Computer Vision"
+            : category === "nlp"
+              ? "Natural Language Processing"
+              : category === "dl"
+                ? "Deep Learning"
+                : "Exploratory Data Analysis";
 
-        categoryDescription.textContent = isCV
-          ? "Explore your Computer Vision programs."
-          : "Explore your NLP programs.";
+        categoryDescription.textContent =
+          category === "cv"
+            ? "Explore your Computer Vision programs."
+            : category === "nlp"
+              ? "Explore your NLP programs."
+              : category === "dl"
+                ? "Explore your Deep Learning programs."
+                : "Explore your EDA programs.";
 
         programGrid.innerHTML = "";
 
@@ -720,9 +1228,17 @@ for ent in doc.ents:
 
       function showCode(program, index) {
         selectedCode = program.code;
-        codeTitle.textContent = `${program.title} — ${
-          currentCategory === "cv" ? "Computer Vision" : "NLP"
-        }`;
+
+        const categoryName =
+          currentCategory === "cv"
+            ? "Computer Vision"
+            : currentCategory === "nlp"
+              ? "NLP"
+              : currentCategory === "dl"
+                ? "Deep Learning"
+                : "EDA";
+
+        codeTitle.textContent = `${program.title} — ${categoryName}`;
 
         codeContent.textContent = selectedCode;
         codePanel.classList.add("show");
